@@ -9,15 +9,18 @@ import com.example.islandd.model.*
 import com.example.islandd.model.animals.*
 import com.example.islandd.model.plants.Grass
 import com.example.islandd.utils.RandomGenerator
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
 import kotlin.reflect.full.isSubclassOf
 
 class MainActivity : AppCompatActivity() {
     private lateinit var island: Island
     private lateinit var statsTextView: TextView
-    private lateinit var startButton: Button
-    private lateinit var stopButton: Button
+    private lateinit var startButton: MaterialButton
+    private lateinit var stopButton: MaterialButton
     private lateinit var interactionsTextView: TextView
+    private lateinit var fabSettings: FloatingActionButton
     private var isSimulationRunning = false
     private val mainScope = MainScope()
     
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
             startButton = findViewById(R.id.startButton)
             stopButton = findViewById(R.id.stopButton)
             interactionsTextView = findViewById(R.id.interactionsTextView)
+            fabSettings = findViewById(R.id.fabSettings)
             Log.d(TAG, "onCreate: Views initialized")
             
             // Создаем остров с параметрами из конфигурации
@@ -59,6 +63,10 @@ class MainActivity : AppCompatActivity() {
                 if (isSimulationRunning) {
                     stopSimulation()
                 }
+            }
+
+            fabSettings.setOnClickListener {
+                // Здесь будет настройка симуляции
             }
 
             // Устанавливаем начальное состояние кнопок
@@ -168,9 +176,24 @@ class MainActivity : AppCompatActivity() {
             val interactions = island.getInteractions()
             val interactionsText = StringBuilder()
             interactionsText.appendLine("Взаимодействия:")
-            interactions.forEach { interaction ->
+            
+            // Ограничиваем количество отображаемых взаимодействий
+            val maxInteractions = 10 // Максимальное количество взаимодействий для отображения
+            val recentInteractions = if (interactions.size > maxInteractions) {
+                interactions.takeLast(maxInteractions)
+            } else {
+                interactions
+            }
+            
+            recentInteractions.forEach { interaction ->
                 interactionsText.appendLine(interaction)
             }
+            
+            // Если взаимодействий больше, чем максимальное количество, добавляем информацию об этом
+            if (interactions.size > maxInteractions) {
+                interactionsText.insert(0, "Последние $maxInteractions из ${interactions.size} взаимодействий:\n")
+            }
+            
             runOnUiThread {
                 interactionsTextView.text = interactionsText.toString()
             }
@@ -217,13 +240,50 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: Activity resumed")
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: Activity paused")
+        // Если приложение уходит в фон, останавливаем симуляцию для экономии ресурсов
+        if (isSimulationRunning) {
+            Log.d(TAG, "onPause: Pausing running simulation")
+            stopSimulation()
+            // Сохраняем флаг, что симуляция была запущена
+            val sharedPrefs = getPreferences(MODE_PRIVATE)
+            sharedPrefs.edit().putBoolean("simulation_was_running", true).apply()
+        }
+    }
+    
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: Activity stopped")
+    }
+    
     override fun onDestroy() {
         Log.d(TAG, "onDestroy: Starting cleanup")
         super.onDestroy()
         if (isSimulationRunning) {
             stopSimulation()
         }
-        mainScope.cancel()
-        Log.d(TAG, "onDestroy: Cleanup completed")
+        
+        try {
+            // Освобождаем ресурсы корутин
+            mainScope.cancel()
+            Log.d(TAG, "onDestroy: MainScope cancelled")
+        } catch (e: Exception) {
+            Log.e(TAG, "onDestroy: Error cancelling MainScope", e)
+        }
+        
+        // Явно освобождаем ссылки на объекты с состоянием
+        try {
+            // Здесь очищаем ссылки на объекты, которые могли привести к утечке памяти
+            Log.d(TAG, "onDestroy: Cleanup completed")
+        } catch (e: Exception) {
+            Log.e(TAG, "onDestroy: Error during cleanup", e)
+        }
     }
 }

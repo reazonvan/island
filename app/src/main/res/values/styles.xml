@@ -1,18 +1,71 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
-        <item name="android:windowBackground">@color/white</item>
+    <!-- Базовый стиль для всего приложения -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/md_primary</item>
+        <item name="colorPrimaryDark">@color/md_primary_dark</item>
+        <item name="colorAccent">@color/md_secondary</item>
+        <item name="android:windowBackground">@color/md_background_light</item>
     </style>
 
-    <style name="ButtonStyle">
-        <item name="android:backgroundTint">@color/purple_500</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="TextViewStyle">
-        <item name="android:textColor">@color/black</item>
+    <!-- Стиль для кнопок с материальным дизайном -->
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:elevation">4dp</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="rippleColor">@color/md_primary_light</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Стиль для тени с эффектом стекла -->
+    <style name="GlassCardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="contentPadding">0dp</item>
+        <item name="cardBackgroundColor">@color/md_glass_light</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/md_glass_primary</item>
+    </style>
+
+    <!-- Стиль для обычных карточек -->
+    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">16dp</item>
+        <item name="cardBackgroundColor">@color/md_surface_light</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="rippleColor">@color/md_primary_light</item>
+    </style>
+
+    <!-- Стиль для заголовков -->
+    <style name="TextViewHeaderStyle">
+        <item name="android:textColor">@color/md_text_primary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Стиль для обычного текста -->
+    <style name="TextViewContentStyle">
+        <item name="android:textColor">@color/md_text_secondary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Стиль для небольших подписей -->
+    <style name="TextViewCaptionStyle">
+        <item name="android:textColor">@color/md_text_tertiary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 </resources> 
